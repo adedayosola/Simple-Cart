@@ -48,7 +48,23 @@ const reducer = (state, action) => {
   if (action.type === "DISPLAY_ITEMS") {
     return { ...state, cart: action.payload, loading: false };
   }
+  if (action.type === "TOGGLE_AMOUNT") {
+    let newCart = state.cart
+      .map((item) => {
+        if (item.id === action.payload.id) {
+          if (action.payload.type === "increase") {
+            return { ...item, amount: item.amount + 1 };
+          }
+          if (action.payload.type === "decrease") {
+            return { ...item, amount: item.amount - 1 };
+          }
+        }
+        return item;
+      })
+      .filter((item) => item.amount !== 0);
+    return { ...state, cart: newCart };
+  }
 
-  return state;
+  throw new Error("no matching action type");
 };
 export default reducer;
